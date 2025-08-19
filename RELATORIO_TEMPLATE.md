@@ -13,19 +13,19 @@ strace -e write ./ex1b_write
 ### Análise
 
 **1. Quantas syscalls write() cada programa gerou?**
-- ex1a_printf: _____ syscalls
-- ex1b_write: _____ syscalls
+- ex1a_printf: 9 syscalls
+- ex1b_write: 7 syscalls
 
 **2. Por que há diferença entre printf() e write()?**
 
 ```
-[Sua análise aqui]
+O comando printf() direciona a saída diretamente para o terminal, quanto que o write() tem a possibilidade de redirecionar a saída
 ```
 
 **3. Qual implementação você acha que é mais eficiente? Por quê?**
 
 ```
-[Sua análise aqui]
+Devido ao menor número de chamadas de sistema, o write() é mais eficiente
 ```
 
 ---
@@ -33,8 +33,8 @@ strace -e write ./ex1b_write
 ## Exercício 2 - Leitura de Arquivo
 
 ### Resultados da execução:
-- File descriptor: _____
-- Bytes lidos: _____
+- File descriptor: 3
+- Bytes lidos: 127
 
 ### Comando strace:
 ```bash
@@ -60,10 +60,10 @@ strace -e open,read,close ./ex2_leitura
 ## Exercício 3 - Contador com Loop
 
 ### Resultados (BUFFER_SIZE = 64):
-- Linhas: _____ (esperado: 25)
-- Caracteres: _____
-- Chamadas read(): _____
-- Tempo: _____ segundos
+- Linhas: 24 (esperado: 25)
+- Caracteres: 1299
+- Chamadas read(): 21
+- Tempo: 0.000425 segundos
 
 ### Experimentos com buffer:
 
