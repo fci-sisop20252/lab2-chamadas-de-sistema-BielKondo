@@ -19,13 +19,13 @@ strace -e write ./ex1b_write
 **2. Por que há diferença entre printf() e write()?**
 
 ```
-O comando printf() direciona a saída diretamente para o terminal, quanto que o write() tem a possibilidade de redirecionar a saída
+O comando printf() é um comando de alto nível, ou seja, que não conversa diretamente com a máquina e que possui formatação e utiliza um buffer para otimizar o sistema, mas que pode variar, enquanto que o write() já é um comando de baixo nível, sem formatação, sem buffer e com mais controle sobre o que se quer fazer
 ```
 
 **3. Qual implementação você acha que é mais eficiente? Por quê?**
 
 ```
-Devido ao menor número de chamadas de sistema, o write() é mais eficiente
+Devido ao menor número de chamadas de sistema e por ser mais simples, o write() é mais eficiente
 ```
 
 ---
@@ -46,13 +46,13 @@ strace -e open,read,close ./ex2_leitura
 **1. Por que o file descriptor não foi 0, 1 ou 2?**
 
 ```
-[Sua análise aqui]
+O file descriptor é 3, pois 0, 1 e 2 já estão reservados paras stdin (teclado), stdout (tela) e strderr (erro), então ele pega o próximo número para designar a abertura do arquivo
 ```
 
 **2. Como você sabe que o arquivo foi lido completamente?**
 
 ```
-[Sua análise aqui]
+Sabemos que o arquivo foi completamente lido, pois em nenhum momento a estrutura de condição "if" foi executada caso o número de bytes lidos fosse menor que 0.
 ```
 
 ---
@@ -69,23 +69,23 @@ strace -e open,read,close ./ex2_leitura
 
 | Buffer Size | Chamadas read() | Tempo (s) |
 |-------------|-----------------|-----------|
-| 16          |                 |           |
-| 64          |                 |           |
-| 256         |                 |           |
-| 1024        |                 |           |
+| 16          | 82              | 0.001835  |
+| 64          | 21              | 0.000508  |
+| 256         | 6               | 0.000352  |
+| 1024        | 2               | 0.000189  |
 
 ### Análise
 
 **1. Como o tamanho do buffer afeta o número de syscalls?**
 
 ```
-[Sua análise aqui]
+Quanto maior o tamanho do buffer, menos syscalls o sistema precisa fazer
 ```
 
 **2. Como você detecta o fim do arquivo?**
 
 ```
-[Sua análise aqui]
+O fim do arquivo é detectado quando a função read() retorna 0, com a execução do strace
 ```
 
 ---
@@ -93,29 +93,29 @@ strace -e open,read,close ./ex2_leitura
 ## Exercício 4 - Cópia de Arquivo
 
 ### Resultados:
-- Bytes copiados: _____
-- Operações: _____
-- Tempo: _____ segundos
-- Throughput: _____ KB/s
+- Bytes copiados: 1364
+- Operações: 6
+- Tempo: 0.000200 segundos
+- Throughput: 6660.16 KB/s
 
 ### Verificação:
 ```bash
 diff dados/origem.txt dados/destino.txt
 ```
-Resultado: [ ] Idênticos [ ] Diferentes
+Resultado: [X] Idênticos [ ] Diferentes
 
 ### Análise
 
 **1. Por que devemos verificar que bytes_escritos == bytes_lidos?**
 
 ```
-[Sua análise aqui]
+Para sabermos se o sistema realmente conseguiu ler a mesma quantidade de bytes escritos e nos dar um resultado preciso
 ```
 
 **2. Que flags são essenciais no open() do destino?**
 
 ```
-[Sua análise aqui]
+O_WRONLY, O_CREAT e O_TRUNC são flags essenciais para podermos copiar o conteúdo de um arquivo para outro
 ```
 
 ---
@@ -127,19 +127,19 @@ Resultado: [ ] Idênticos [ ] Diferentes
 **1. Como as syscalls demonstram a transição usuário → kernel?**
 
 ```
-[Sua análise aqui]
+Ao chamar as syscalls no modo usuário, o kernel recebe e executa a operação chamada que retorna o seu resultado e muda novamente para o modo usuário
 ```
 
 **2. Qual é o seu entendimento sobre a importância dos file descriptors?**
 
 ```
-[Sua análise aqui]
+Os files descriptors são uma forma de identificar e gerenciar os recursos que o kernel controla
 ```
 
 **3. Discorra sobre a relação entre o tamanho do buffer e performance:**
 
 ```
-[Sua análise aqui]
+O buffer é um espaço na memória utilizado para acumular dados e enviá-los de uma só vez, em vez de chamar o sistema operacional toda vez que é passado uma informação. Essa relação melhora o desempenho do sistema.
 ```
 
 ### Comparação de Performance
@@ -150,12 +150,12 @@ time ./ex4_copia
 time cp dados/origem.txt dados/destino_cp.txt
 ```
 
-**Qual foi mais rápido?** _____
+**Qual foi mais rápido?** O meu programa
 
 **Por que você acha que foi mais rápido?**
 
 ```
-[Sua análise aqui]
+Acredito que tenha sido mais rápido, pois no programa trabalhamos com comandos de baixo nível, com menos abstração.
 ```
 
 ---
